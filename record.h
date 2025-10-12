@@ -1,0 +1,39 @@
+#pragma once
+#include <stdio.h>
+
+typedef struct {
+    int a[5];
+    int x;
+} record;
+
+static inline int read_record(FILE* stream, record* out)
+{
+    int result = fscanf(stream, "%d %d %d %d %d %d", &out->a[0], &out->a[1], &out->a[2], &out->a[3], &out->a[4], &out->x);
+    if (result == 6) {
+        return 0;
+    }
+    if (result == EOF) {
+        return EOF;
+    }
+    return -2;
+}
+
+static inline int g(const record* x)
+{
+    int out = 0;
+    int x_n = 1;
+    for (int i = 0; i < 5; i++) {
+        out += x->a[i] * x_n;
+        x_n *= x->x;
+    }
+    return out;
+}
+
+static inline int compare_records(const void* a, const void* b)
+{
+    const record* ra = (const record*)a;
+    const record* rb = (const record*)b;
+    const int ga = g(ra);
+    const int gb = g(rb);
+    return (ga > gb) - (ga < gb);
+}
