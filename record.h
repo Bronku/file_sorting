@@ -43,3 +43,11 @@ static inline int read_record(FILE* stream, record* out)
     }
     return -2;
 }
+
+static inline void random_record(record* out)
+{
+    for (int i = 0; i < 5; i++) {
+        out->a[i] = rand();
+    }
+    out->x = rand();
+}

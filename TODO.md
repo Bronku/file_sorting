@@ -1,14 +1,13 @@
 - [ ] file operations
   - [ ] write to file (at index)
-  - [ ] read from file (at index)
   - [ ] print_file (maybe just calling cat???)
 - [ ] a tape type - representing a file?
 - [x] a record type - x1,x2,x3,x4,x5
   - [x] comparing records
-- [ ] natural merge sort
-- [ ] configuration
-  - [ ] cmd args - man getopts
-- [ ] file input
-- [ ] keyboard input
+- [ ] buffer merge sort
+- [x] configuration
+  - [x] cmd args - man getopts
+- [x] file input
+- [x] keyboard input
 - [ ] testing
 - [ ] report

@@ -1,25 +1,13 @@
-# Compiler 
-CC = clang
-CFLAGS = -Wall -Wextra -g
-TARGET = file_sorting
-BUILD_DIR = build
+build/main: main.c build
+	clang main.c -o build/main
 
-SRCS = main.c 
-OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
-
-$(BUILD_DIR)/$(TARGET): $(OBJS) 
-	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
-
-$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+build:
+	mkdir -p build
 
 clean:
 	rm -rf build
 
-run: $(BUILD_DIR)/$(TARGET)
-	$(BUILD_DIR)/$(TARGET)
+run: build/main
+	build/main -f tests/1.in
 
 .PHONY: clean run 
