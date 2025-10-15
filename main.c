@@ -1,3 +1,5 @@
+#include "record.h"
+#include "tape.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,7 +83,7 @@ int process_args(int argc, char** argv, options* opts)
         fprintf(stderr, "No file specified, aborting\n");
         return ERROR;
     }
-    opts->input = fopen(filename, "a+");
+    opts->input = fopen(filename, "r");
     if (!opts->input) {
         fprintf(stderr, "Error: Cannot open file '%s'\n", filename);
         return ERROR;
@@ -99,6 +101,18 @@ void write_file(options* opts)
 
 void sort_file(options* opts)
 {
+    tape a = { 0, 0, opts->input };
+    buffer buff;
+    buff.capacity = 100;
+    buff.location = malloc(sizeof(record) * buff.capacity);
+    int status = read_buffer(&buff, &a);
+    if (status != SUCCESS && status != EOF) {
+        printf("Error reading file: %d\n", status);
+    }
+    fclose(a.file);
+    a.file = stdout;
+    sort_buffer(&buff);
+    free(buff.location);
 }
 
 int main(int argc, char** argv)

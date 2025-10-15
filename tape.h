@@ -14,11 +14,11 @@ typedef struct {
 } buffer;
 
 // sorts the entire buffer
-void quicksort(buffer* buff);
+void sort_buffer(buffer* buff);
 
 // reads [capacity] records
-void read_buffer(buffer* buff, tape* tape);
+int read_buffer(buffer* buff, tape* tape);
 // writes everything
-void write_buffer(buffer* buff, tape* tape);
+int write_buffer(buffer* buff, tape* tape);
 
 void clear_tape(tape* tape);

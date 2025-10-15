@@ -4,7 +4,7 @@
 - [ ] a tape type - representing a file?
 - [x] a record type - x1,x2,x3,x4,x5
   - [x] comparing records
-- [ ] buffer merge sort
+- [x] buffer quick sort
 - [x] configuration
   - [x] cmd args - man getopts
 - [x] file input
