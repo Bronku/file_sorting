@@ -83,7 +83,10 @@ int process_args(int argc, char** argv, options* opts)
         fprintf(stderr, "No file specified, aborting\n");
         return ERROR;
     }
-    opts->input = fopen(filename, "r");
+    opts->input = fopen(filename, "r+");
+    if (!opts->input) {
+        opts->input = fopen(filename, "w+");
+    }
     if (!opts->input) {
         fprintf(stderr, "Error: Cannot open file '%s'\n", filename);
         return ERROR;
@@ -93,6 +96,14 @@ int process_args(int argc, char** argv, options* opts)
 
 void generate_file(options* opts)
 {
+    srand(time(0));
+    record rec;
+    for (int i = 0; i < opts->N; i++) {
+        random_record(&rec);
+        print_record(opts->input, &rec);
+        fprintf(opts->input, "\n");
+    }
+    fseek(opts->input, 0, SEEK_SET);
 }
 
 void write_file(options* opts)
@@ -127,7 +138,6 @@ int main(int argc, char** argv)
         return result;
     }
     if (opts.generate_data) {
-        srand(time(0));
         generate_file(&opts);
     }
     if (opts.manual_input) {
