@@ -3,9 +3,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
 
+#define DEFAULT_FILE "tests/1.in"
+#define DEFAULT_DIR "tmp"
 #define DEFAULT_NN 100000
 #define DEFAULT_N 101
 #define DEFAULT_B 10
@@ -16,17 +20,20 @@
 void print_usage()
 {
     printf("Options:\n");
-    printf("  -f [filename]\tRead/Generate records from [filename]\n");
-    printf("  -r\t randomly generate N records, and process them\n");
+    printf("  -f [filename]\tRead/Generate records from [filename], default %s\n", DEFAULT_FILE);
+    printf("  -d [dirname]\tSet the directory used for temporary files, default %s\n", DEFAULT_DIR);
     printf("  -N [count]\tSet total number of records, default %d\n", DEFAULT_NN);
     printf("  -n [count]\tSet blocking factor, default %d\n", DEFAULT_N);
     printf("  -b [count]\tSet number of buffers, default %d\n", DEFAULT_B);
+    printf("  -r\t randomly generate N records\n");
     printf("  -h\tShow this help message\n");
 }
 
 typedef struct
 {
     FILE* input;
+    char* filename;
+    char* dirname;
     bool generate_data;
     bool manual_input;
     int N; // number of records in a file
@@ -41,17 +48,21 @@ int process_args(int argc, char** argv, options* opts)
         return ERROR;
     }
     opts->input = stdin;
+    opts->filename = DEFAULT_FILE;
+    opts->dirname = DEFAULT_DIR;
     opts->generate_data = false;
     opts->manual_input = false;
     opts->N = DEFAULT_NN;
     opts->n = DEFAULT_N;
     opts->b = DEFAULT_B;
-    char* filename = NULL;
     int opt;
-    while ((opt = getopt(argc, argv, "f:N:n:b:rhm")) != -1) {
+    while ((opt = getopt(argc, argv, "f:d:N:n:b:rhm")) != -1) {
         switch (opt) {
         case 'f':
-            filename = optarg;
+            opts->filename = optarg;
+            break;
+        case 'd':
+            opts->dirname = optarg;
             break;
         case 'r':
             opts->generate_data = true;
@@ -67,6 +78,7 @@ int process_args(int argc, char** argv, options* opts)
             break;
         case 'm':
             opts->manual_input = true;
+            break;
         case 'h':
             print_usage();
             return END_PROGRAM;
@@ -79,17 +91,17 @@ int process_args(int argc, char** argv, options* opts)
         fprintf(stderr, "Incompatible arguments: mr, aborting\n");
         return ERROR;
     }
-    if (filename == NULL) {
-        fprintf(stderr, "No file specified, aborting\n");
-        return ERROR;
-    }
-    opts->input = fopen(filename, "r+");
+    opts->input = fopen(opts->filename, "r+");
     if (!opts->input) {
-        opts->input = fopen(filename, "w+");
+        opts->input = fopen(opts->filename, "w+");
     }
     if (!opts->input) {
-        fprintf(stderr, "Error: Cannot open file '%s'\n", filename);
+        fprintf(stderr, "Error: Cannot open file '%s'\n", opts->filename);
         return ERROR;
+    }
+    struct stat st = { 0 };
+    if (stat(opts->dirname, &st) == -1) {
+        mkdir(opts->dirname, 0777);
     }
     return SUCCESS;
 }
@@ -159,6 +171,7 @@ int main(int argc, char** argv)
     }
     if (opts.generate_data) {
         generate_file(&opts);
+        return SUCCESS;
     }
     if (opts.manual_input) {
         write_file(&opts);

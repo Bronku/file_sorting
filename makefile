@@ -16,7 +16,7 @@ tests:
 	mkdir -p tests
 
 clean:
-	rm -rf build tests
+	rm -rf build tests tmp
 
 run: build/main tests/1.in
 	build/main -f tests/1.in | less
