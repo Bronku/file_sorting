@@ -16,9 +16,9 @@ clean:
 	rm -rf build
 
 run: build/main
-	build/main -f tests/1.in
+	build/main -f tests/2.in | less
 
 debug: build/main
-	lldb -- build/main -f tests/1.in
+	lldb -- build/main -f tests/2.in
 
-.PHONY: clean run 
+.PHONY: clean run debug

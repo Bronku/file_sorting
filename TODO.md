@@ -1,7 +1,7 @@
-- [ ] file operations
-  - [ ] write to file (at index)
-  - [ ] print_file (maybe just calling cat???)
-- [ ] a tape type - representing a file?
+- [x] file operations
+  - [x] write to file (at index)
+  - [x] read file 
+- [x] a tape type - representing a file?
 - [x] a record type - x1,x2,x3,x4,x5
   - [x] comparing records
 - [x] buffer quick sort
@@ -9,5 +9,14 @@
   - [x] cmd args - man getopts
 - [x] file input
 - [x] keyboard input
+- [ ] stage 1
+  - [x] reading chunks
+  - [x] sorting
+  - [ ] writing chunks
+- [ ] stage 2
+  - [ ] reading chunks
+  - [ ] multiway merge
+  - [ ] writing chunks
+  - [ ] repeat untill done
 - [ ] testing
 - [ ] report

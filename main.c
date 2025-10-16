@@ -110,20 +110,40 @@ void write_file(options* opts)
 {
 }
 
-void sort_file(options* opts)
+int sort_block(tape* t, buffer* buff)
+{
+    static int counter = 0;
+    int status = read_buffer(buff, t);
+    if (status != SUCCESS && status != EOF) {
+        fprintf(stderr, "Error reading file: %d\n", status);
+        return status;
+    }
+
+    sort_buffer(buff);
+    printf("sorted the buffer %d, the results:\n", counter);
+    print_buffer(buff);
+    counter++;
+    return status;
+}
+
+int sort_file(options* opts)
 {
     tape a = { 0, 0, opts->input };
     buffer buff;
-    buff.capacity = 100;
+    buff.capacity = opts->b * opts->n;
     buff.location = malloc(sizeof(record) * buff.capacity);
-    int status = read_buffer(&buff, &a);
-    if (status != SUCCESS && status != EOF) {
-        printf("Error reading file: %d\n", status);
+    int status = 0;
+    while (status == SUCCESS) {
+        status = sort_block(&a, &buff);
     }
-    fclose(a.file);
-    a.file = stdout;
-    sort_buffer(&buff);
+    if (status != EOF) {
+        free(buff.location);
+        fclose(a.file);
+        return status;
+    }
     free(buff.location);
+    fclose(a.file);
+    return SUCCESS;
 }
 
 int main(int argc, char** argv)

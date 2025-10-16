@@ -60,6 +60,39 @@ int read_buffer(buffer* buff, tape* tape)
     return 0;
 }
 
+void print_full_buffer(buffer* buff)
+{
+    for (int i = 0; i < buff->length; i++) {
+        record* current = buff->location;
+        current += i;
+        printf("i: %d\tg: %d\t", i, g(current));
+        print_record(stdout, current);
+        printf("\n");
+    }
+}
+
+void print_buffer(buffer* buff)
+{
+    if (buff->length <= 10) {
+        print_full_buffer(buff);
+        return;
+    }
+    for (int i = 0; i < 5; i++) {
+        record* current = buff->location;
+        current += i;
+        printf("i: %d\tg: %d\t", i, g(current));
+        print_record(stdout, current);
+        printf("\n");
+    }
+    for (int i = buff->length - 5; i < buff->length; i++) {
+        record* current = buff->location;
+        current += i;
+        printf("i: %d\tg: %d\t", i, g(current));
+        print_record(stdout, current);
+        printf("\n");
+    }
+}
+
 int write_buffer(buffer* buff, tape* tape)
 {
     record* current = buff->location;
