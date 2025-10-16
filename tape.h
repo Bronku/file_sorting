@@ -20,6 +20,7 @@ void sort_buffer(buffer* buff);
 int read_buffer(buffer* buff, tape* tape);
 // writes everything
 int write_buffer(buffer* buff, tape* tape);
+// for debugging
 void print_buffer(buffer* buff);
 
 void clear_tape(tape* tape);

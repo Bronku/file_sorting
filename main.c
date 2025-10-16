@@ -6,8 +6,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#define DEFAULT_NN 10000000
-#define DEFAULT_N 1001
+#define DEFAULT_NN 100000
+#define DEFAULT_N 101
 #define DEFAULT_B 10
 #define END_PROGRAM -1
 #define SUCCESS 0

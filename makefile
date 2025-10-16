@@ -12,13 +12,19 @@ build/tape.o: tape.c build
 build:
 	mkdir -p build
 
+tests:
+	mkdir -p tests
+
 clean:
-	rm -rf build
+	rm -rf build tests
 
-run: build/main
-	build/main -f tests/2.in | less
+run: build/main tests/1.in
+	build/main -f tests/1.in | less
 
-debug: build/main
-	lldb -- build/main -f tests/2.in
+debug: build/main tests/1.in
+	lldb -- build/main -f tests/1.in
+
+tests/1.in: build/main tests
+	build/main -f tests/1.in -r  
 
 .PHONY: clean run debug
