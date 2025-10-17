@@ -12,11 +12,11 @@
 - [ ] stage 1
   - [x] reading chunks
   - [x] sorting
-  - [ ] writing chunks
+  - [ ] writing runs
 - [ ] stage 2
-  - [ ] reading chunks
+  - [ ] reading runs
   - [ ] multiway merge
-  - [ ] writing chunks
+  - [ ] writing larger runs
   - [ ] repeat untill done
 - [ ] testing
 - [ ] report
