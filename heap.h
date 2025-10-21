@@ -1,6 +1,7 @@
 #pragma once
 
 #include "record.h"
+#include "stdbool.h"
 
 typedef struct {
     record* location;
@@ -9,9 +10,15 @@ typedef struct {
     bool is_blank;
 } heap_record;
 
-// moves elements to maintain heap property
-int heapify(heap_record* heap);
-// returns the first element, and calls heapify
-int heap_pop(heap_record* heap, heap_record* out);
-// writes to the last elements, and calls heapify
-int heap_pus(heap_record* heap, heap_record* in);
+// almost the same as typedef buffer, but the usage is different, so I think it can be repeated
+typedef struct {
+    heap_record* location;
+    int length;
+    int capacity;
+} heap;
+
+heap new_heap(int size);
+// free_heap is just free(h->location), so it's kinda unnecessary
+
+int heap_pop(heap* h, heap_record* out);
+int heap_push(heap* h, heap_record* in);

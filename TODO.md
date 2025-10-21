@@ -14,9 +14,24 @@
   - [x] sorting
   - [x] writing runs
 - [ ] stage 2
-  - [ ] reading runs
+  - [ ] implement a min heap with following operations
+    - [ ] pop
+    - [ ] push
+  - [ ] step 4
+    - [ ] split the buffer into chunks of size n, and (b-1)n
+    - [ ] create a min heap of size (b-1)n
+    - [ ] populate the heap with (b-1) runs of n elements (each from a different file)
+    - [ ] find a way to mark if a last element from a certain file has been popped
+    - [ ] when a merged buffer is full, write it to file
+    - [ ] pop off the top element until there are no more elements from a certain array
+    - [ ] load another run from that file, and rehapify
+    - [ ] repeat untill all files empty
+    - [ ] the resulting file should get the new smallest filename in tmp dir
+
   - [ ] multiway merge
   - [ ] writing larger runs
   - [ ] repeat untill done
+
+- [ ] counting read, and write operations
 - [ ] testing
 - [ ] report

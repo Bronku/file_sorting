@@ -1,7 +1,7 @@
 CFLAGS = -g
 
-build/main: build/main.o build/config.o build/buffer.o
-	clang $(CFLAGS) build/main.o  build/config.o build/buffer.o -o build/main
+build/main: build/main.o build/config.o build/buffer.o build/heap.o
+	clang $(CFLAGS) build/main.o  build/config.o build/buffer.o build/heap.o -o build/main
 
 build/main.o: main.c build
 	clang $(CFLAGS) -c main.c -o build/main.o
@@ -11,6 +11,9 @@ build/config.o: config.c build
 
 build/buffer.o: buffer.c build
 	clang $(CFLAGS) -c buffer.c -o build/buffer.o
+
+build/heap.o: heap.c build
+	clang $(CFLAGS) -c heap.c -o build/heap.o
 
 build:
 	mkdir -p build
