@@ -23,20 +23,26 @@ int generate_file(int N, const char* filename)
 
 int sort_file(Configuration* opts)
 {
-    // create buffer
     buffer buff = create_buffer(opts->b * opts->n);
-    // open file
     FILE* in = fopen(opts->input_file, "r");
     // <stage 1>
-    // while !eof:
     for (int i = 0; true; i++) {
         //     read buffer
         int status = read_buffer(&buff, in);
-        printf("buffer i:%d, status: %d\n", i, status);
+        if (status != SUCCESS && status != EOF) {
+            fclose(in);
+            free(buff.location);
+        }
         //     sort buffer
-
+        sort_buffer(&buff);
         //     write run
-        write_buffer(&buff, stdout);
+        char* filename = malloc(256);
+        sprintf(filename, "%s/%d", opts->directory, i);
+        FILE* tmp = fopen(filename, "w");
+        write_buffer(&buff, tmp);
+        fclose(tmp);
+        free(filename);
+        // write_buffer_debug(&buff, stdout);
         if (status != SUCCESS) {
             break;
         }
