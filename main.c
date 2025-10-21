@@ -25,8 +25,9 @@ int sort_file(Configuration* opts)
 {
     buffer buff = create_buffer(opts->b * opts->n);
     FILE* in = fopen(opts->input_file, "r");
+    int runs;
     // <stage 1>
-    for (int i = 0; true; i++) {
+    for (runs = 0; true; runs++) {
         //     read buffer
         int status = read_buffer(&buff, in);
         if (status != SUCCESS && status != EOF) {
@@ -37,22 +38,22 @@ int sort_file(Configuration* opts)
         sort_buffer(&buff);
         //     write run
         char* filename = malloc(256);
-        sprintf(filename, "%s/%d", opts->directory, i);
+        sprintf(filename, "%s/%d", opts->directory, runs);
         FILE* tmp = fopen(filename, "w");
         write_buffer(&buff, tmp);
         fclose(tmp);
         free(filename);
-        // write_buffer_debug(&buff, stdout);
         if (status != SUCCESS) {
             break;
         }
     }
     // <stage 2>
-    // while tmp:
-    //     merge b-1 runs
-    //
-    // close file
-    // free buffer
+    // while (runs > 1) {
+    //     // split buffers
+    //     // read buffers
+    //     for (int i = 0; i < opts->b - 1; i++) {
+    //     }
+    // }
     fclose(in);
     free(buff.location);
     return SUCCESS;
