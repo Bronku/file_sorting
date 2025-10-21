@@ -28,9 +28,9 @@ static inline int compare_records(const void* a, const void* b)
     return result;
 }
 
-static inline void print_record(FILE* stream, const record* out)
+static inline int print_record(FILE* stream, const record* out)
 {
-    fprintf(stream, "%d %d %d %d %d %d",
+    return fprintf(stream, "%d %d %d %d %d %d",
         out->a[0], out->a[1], out->a[2], out->a[3], out->a[4], out->x);
 }
 
