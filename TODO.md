@@ -1,6 +1,6 @@
 - [x] file operations
   - [x] write to file (at index)
-  - [x] read file 
+  - [x] read file
 - [x] a tape type - representing a file?
 - [x] a record type - x1,x2,x3,x4,x5
   - [x] comparing records
@@ -8,11 +8,11 @@
 - [x] configuration
   - [x] cmd args - man getopts
 - [x] file input
-- [x] keyboard input
-- [ ] stage 1
+- [ ] keyboard input
+- [x] stage 1
   - [x] reading chunks
   - [x] sorting
-  - [ ] writing runs
+  - [x] writing runs
 - [ ] stage 2
   - [ ] reading runs
   - [ ] multiway merge
