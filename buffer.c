@@ -41,3 +41,61 @@ int write_buffer(buffer* buff, FILE* out)
     }
     return SUCCESS;
 }
+
+int write_buffer_debug(buffer* buff, FILE* out)
+{
+    int status;
+    record* current = buff->location;
+    for (int i = 0; i < buff->length; i++) {
+        fprintf(out, "%d\t", g(current));
+        status = print_record(out, current);
+        if (status < 0) {
+            return status;
+        }
+        fprintf(out, "\n");
+        current++;
+    }
+    return SUCCESS;
+}
+
+int partition(record* arr, int start, int end)
+{
+    int i = start;
+    record* pivot = arr;
+    pivot += end;
+    for (int j = start; j < end; j++) {
+        record* current = arr;
+        current += j;
+        if (compare_records(current, pivot) > 0) {
+            continue;
+        }
+        record* i_rec = arr;
+        i_rec += i;
+        record tmp = *i_rec;
+        *i_rec = *current;
+        *current = tmp;
+        i++;
+    }
+    record* i_rec = arr;
+    i_rec += i;
+    record tmp = *i_rec;
+    *i_rec = *pivot;
+    *pivot = tmp;
+    return i;
+}
+
+void quicksort(record* arr, int start, int end, int depth)
+{
+    if (start >= end || start < 0) {
+        return;
+    }
+
+    int p = partition(arr, start, end);
+    quicksort(arr, start, p - 1, depth + 1);
+    quicksort(arr, p + 1, end, depth + 1);
+}
+
+void sort_buffer(buffer* buff)
+{
+    quicksort(buff->location, 0, buff->length - 1, 0);
+}
