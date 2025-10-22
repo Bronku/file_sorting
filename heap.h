@@ -1,13 +1,10 @@
 #pragma once
 
-#include "record.h"
 #include "stdbool.h"
 
 typedef struct {
-    record* location;
-    int g;
+    int index;
     int buffer_id;
-    bool is_blank;
 } heap_record;
 
 // almost the same as typedef buffer, but the usage is different, so I think it can be repeated
@@ -15,6 +12,7 @@ typedef struct {
     heap_record* location;
     int length;
     int capacity;
+    int (*compare)(const void* a, const void* b);
 } heap;
 
 heap new_heap(int size);
