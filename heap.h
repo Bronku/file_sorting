@@ -1,22 +1,19 @@
+// doesn't ceck for user erros, so no veryfying that the void* supplied are valid
+// unsafe for general use, but just fnuctional enough for the purposes of this project
+// does not maintain ownership of its elements, they are managed by the caller
 #pragma once
 
 #include "stdbool.h"
 
 typedef struct {
-    int index;
-    int buffer_id;
-} heap_record;
-
-// almost the same as typedef buffer, but the usage is different, so I think it can be repeated
-typedef struct {
-    heap_record* location;
+    void** data;
     int length;
     int capacity;
     int (*compare)(const void* a, const void* b);
 } heap;
 
-heap new_heap(int size);
-// free_heap is just free(h->location), so it's kinda unnecessary
+heap* create_heap(int size, int (*comparison)(const void* a, const void* b));
+void destroy_heap(heap* h);
 
-int heap_pop(heap* h, heap_record* out);
-int heap_push(heap* h, heap_record* in);
+int heap_pop(heap* h, void** out);
+int heap_push(heap* h, void* in);
