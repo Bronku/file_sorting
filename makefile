@@ -33,7 +33,16 @@ build/run/1.in: build/run build/main
 run: build/main build/run/1.in build/run/tmp
 	build/main -i build/run/1.in -d build/run/tmp | less
 
+build/heap_test.o: heap_test.c build
+	clang $(CFLAGS) -c heap_test.c -o build/heap_test.o
+
+build/test: build/heap_test.o build/heap.o
+	clang $(CFLAGS) build/heap_test.o build/heap.o -o build/test
+
+test: build/test
+	build/test
+
 debug: build/main tests/1.in
 	lldb -- build/main
 
-.PHONY: clean run debug
+.PHONY: clean run debug test

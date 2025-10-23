@@ -1,45 +1,78 @@
 #include "heap.h"
 #include "status_codes.h"
+#include <stdlib.h>
 
-// #unteasted
-int heap_push(heap* h, heap_record* in)
+heap* create_heap(int size, int (*comparison)(const void* a, const void* b))
 {
-    if (h->length >= h->capacity) {
-        return NO_SPACE;
-    }
+    heap* out = malloc(sizeof(heap));
+    out->data = malloc(sizeof(void*) * size);
+    out->length = 0;
+    out->capacity = size;
+    out->compare = comparison;
+    return out;
+}
 
-    int current_index = h->length;
+void destroy_heap(heap* h)
+{
+    free(h->data);
+    free(h);
+}
+
+void swap(void** a, void** b)
+{
+    void* tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+int heap_push(heap* h, void* in)
+{
+    int current = h->length;
+    void** d = h->data;
     h->length++;
-    heap_record* last = h->location;
-    last += current_index;
-    *last = *in;
-
-    if (current_index == 0) {
+    d[current] = in;
+    if (current == 0) {
         return SUCCESS;
     }
+    int parent = (current - 1) / 2;
+    while (h->compare(d[current], d[parent]) == -1) {
+        swap(&d[current], &d[parent]);
+        current = parent;
+        if (current == 0) {
+            break;
+        }
+        parent = (current - 1) / 2;
+    }
+    return SUCCESS;
+}
 
-    int parent_index = (current_index - 1) / 2;
-    // check if violated heap property
-    heap_record* parent = h->location;
-    parent += parent_index;
-    heap_record* current = h->location;
-    current += current_index;
-    // swim up
-    while (current_index != 0 && h->compare(parent, current) == 1) {
-        // current, parent = parent, current
-        heap_record tmp = *current;
-        *current = *parent;
-        *parent = tmp;
-        // current_index = parent_index
-        current_index = parent_index;
-        // parent_index = (current_index -1 )/2
-        parent_index = (current_index - 1) / 2;
-        // current = loc[current_index]
-        current = h->location;
-        current += current_index;
-        // parent = loc[parent_index]
-        parent = h->location;
-        parent_index += parent_index;
+int heap_pop(heap* h, void** out)
+{
+    void** d = h->data;
+    *out = d[0];
+    h->length--;
+    if (h->length == 0) {
+        return SUCCESS;
+    }
+    swap(&d[0], &d[h->length]);
+    int current = 0;
+    int left = current * 2 + 1;
+    int right = current * 2 + 2;
+    while (true) {
+        int smallest = current;
+        if (left < h->length && h->compare(d[smallest], d[left]) == 1) {
+            smallest = left;
+        }
+        if (right < h->length && h->compare(d[smallest], d[right]) == 1) {
+            smallest = right;
+        }
+        if (smallest == current) {
+            break;
+        }
+        swap(&d[smallest], &d[current]);
+        current = smallest;
+        left = current * 2 + 1;
+        right = current * 2 + 2;
     }
     return SUCCESS;
 }
