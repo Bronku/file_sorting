@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // the tests are ai generated, with prompt based on the heap.h file
+=======
+// the tests are ai generated
+>>>>>>> 00717dd038b2c024b529553b5c2a848fceccf2fb
 #include "heap.h"
 #include <assert.h>
 #include <stdio.h>
