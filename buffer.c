@@ -22,10 +22,21 @@ void destroy_buffer(buffer* buff)
     free(buff);
 }
 
-// #todo
-buffer* split_buffer(buffer* original, int pieces)
+buffer** split_buffer(buffer* original, int pieces)
 {
-    return NULL;
+    int size = original->capacity;
+    if (size <= 0) {
+        return NULL;
+    }
+    buffer** out = malloc(sizeof(buffer) * pieces);
+    for (int i = 0; i < pieces; i++) {
+        out[i]->length = 0;
+        out[i]->capacity = size;
+        out[i]->original = 0;
+        out[i]->location = original->location;
+        out[i]->location += i * size * sizeof(record);
+    }
+    return out;
 }
 
 int read_buffer(buffer* buff, FILE* in)
