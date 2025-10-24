@@ -23,39 +23,46 @@ int generate_file(int N, const char* filename)
 
 int sort_file(Configuration* opts)
 {
-    buffer buff = create_buffer(opts->b * opts->n);
+    buffer* buff = create_buffer(opts->b * opts->n);
     FILE* in = fopen(opts->input_file, "r");
     int runs;
     // <stage 1>
     for (runs = 0; true; runs++) {
         //     read buffer
-        int status = read_buffer(&buff, in);
+        int status = read_buffer(buff, in);
         if (status != SUCCESS && status != EOF) {
             fclose(in);
-            free(buff.location);
+            destroy_buffer(buff);
         }
         //     sort buffer
-        sort_buffer(&buff);
+        sort_buffer(buff);
         //     write run
         char* filename = malloc(256);
         sprintf(filename, "%s/%d", opts->directory, runs);
         FILE* tmp = fopen(filename, "w");
-        write_buffer(&buff, tmp);
+        write_buffer(buff, tmp);
+        // write_buffer_debug(buff, stdout);
         fclose(tmp);
         free(filename);
         if (status != SUCCESS) {
             break;
         }
     }
+    printf("created runs: %d\n", runs);
+
     // <stage 2>
-    // while (runs > 1) {
-    //     // split buffers
-    //     // read buffers
-    //     for (int i = 0; i < opts->b - 1; i++) {
-    //     }
-    // }
+    while (runs > 1) {
+
+        // split buffers
+        // read buffers
+        for (int i = 0; i < opts->b - 1; i++) {
+        }
+
+        // b-1 runs are turned into one, so the total is reduced by b-2
+        runs -= (opts->b - 2);
+    }
     fclose(in);
-    free(buff.location);
+    destroy_buffer(buff);
     return SUCCESS;
 }
 

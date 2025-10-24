@@ -1,14 +1,31 @@
 #include "buffer.h"
 #include "record.h"
 #include "status_codes.h"
+#include <stdbool.h>
+#include <string.h>
 
-buffer create_buffer(int capacity)
+buffer* create_buffer(int capacity)
 {
-    buffer out;
-    out.length = 0;
-    out.capacity = capacity;
-    out.location = malloc(sizeof(record) * capacity);
+    buffer* out = malloc(sizeof(buffer));
+    out->length = 0;
+    out->capacity = capacity;
+    out->location = malloc(sizeof(record) * capacity);
+    out->original = true;
     return out;
+}
+
+void destroy_buffer(buffer* buff)
+{
+    if (buff->original) {
+        free(buff->location);
+    }
+    free(buff);
+}
+
+// #todo
+buffer* split_buffer(buffer* original, int pieces)
+{
+    return NULL;
 }
 
 int read_buffer(buffer* buff, FILE* in)
