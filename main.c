@@ -2,6 +2,7 @@
 #include "config.h"
 #include "record.h"
 #include "status_codes.h"
+#include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
@@ -21,47 +22,127 @@ int generate_file(int N, const char* filename)
     return SUCCESS;
 }
 
-int sort_file(Configuration* opts)
+int write_run_to_disk(const char* directory, int run_id, buffer* buff)
 {
-    buffer* buff = create_buffer(opts->b * opts->n);
-    FILE* in = fopen(opts->input_file, "r");
+    char filename[256];
+    sprintf(filename, "%s/%d", directory, run_id);
+    FILE* tmp = fopen(filename, "w");
+    write_buffer(buff, tmp);
+    fclose(tmp);
+    return SUCCESS;
+}
+
+int create_sorted_runs(Configuration* opts, FILE* in, buffer* buff)
+{
     int runs;
-    // <stage 1>
     for (runs = 0; true; runs++) {
-        //     read buffer
         int status = read_buffer(buff, in);
         if (status != SUCCESS && status != EOF) {
-            fclose(in);
-            destroy_buffer(buff);
+            return ERROR;
         }
-        //     sort buffer
         sort_buffer(buff);
-        //     write run
-        char* filename = malloc(256);
-        sprintf(filename, "%s/%d", opts->directory, runs);
-        FILE* tmp = fopen(filename, "w");
-        write_buffer(buff, tmp);
-        // write_buffer_debug(buff, stdout);
-        fclose(tmp);
-        free(filename);
+        if (write_run_to_disk(opts->directory, runs, buff) != SUCCESS) {
+            return ERROR;
+        }
         if (status != SUCCESS) {
             break;
         }
     }
-    printf("created runs: %d\n", runs);
+    return runs;
+}
 
-    // <stage 2>
-    while (runs > 1) {
+FILE** open_input_runs(const char* directory, int start_run, int count)
+{
+    FILE** files = malloc(count * sizeof(FILE));
+    char filename[256];
+    for (int i = 0; i < count; i++) {
+        sprintf(filename, "%s/%d", directory, i + start_run);
+        files[i] = fopen(filename, "r");
+    }
+    return files;
+}
 
-        // split buffers
-        // read buffers
-        for (int i = 0; i < opts->b - 1; i++) {
+void close_and_delete_files(const char* directory, int start_file, int count, FILE** files)
+{
+    for (int i = 0; i < count; i++) {
+        fclose(files[i]);
+        char filename[256];
+        sprintf(filename, "%s/%d", directory, start_file + i);
+        remove(filename);
+    }
+    free(files);
+}
+
+int perform_merge_pass(Configuration* opts, buffer** buffers, int runs, int pass, int (*comapre)(const void*, const void*))
+{
+    int new_runs = 0;
+    int run_index = 0;
+    while (run_index < runs) {
+        int runs_to_merge = opts->b - 1;
+        if (runs - run_index < runs_to_merge) {
+            runs_to_merge = runs - run_index;
         }
 
-        // b-1 runs are turned into one, so the total is reduced by b-2
-        runs -= (opts->b - 2);
+        FILE** input_files = open_input_runs(opts->directory, run_index, runs_to_merge);
+        if (!input_files) {
+            return ERROR;
+        }
+
+        FILE* output_file = open_output_file(new_runs);
+
+        merge_runs_group();
+
+        fclose(output_file);
+        close_and_delete_files(input_files, runs_to_merge);
+        new_runs++;
     }
+}
+
+int merge_all_runs(Configuration* opts, buffer* buff, int initial_runs)
+{
+    buffer** buffers = split_buffer(buff, opts->b);
+    int runs = initial_runs;
+    int merge_pass = 0;
+    while (runs > 1) {
+        runs = perform_merge_pass(opts, buffers, runs, merge_pass);
+        merge_pass++;
+        if (runs >= 0) {
+            continue;
+        }
+        for (int i = 0; i < opts->b; i++) {
+            destroy_buffer(buffers[i]);
+        }
+        return ERROR;
+    }
+
+    for (int i = 0; i < opts->b; i++) {
+        destroy_buffer(buffers[i]);
+    }
+    return SUCCESS;
+}
+
+int sort_file(Configuration* opts)
+{
+    buffer* buff = create_buffer(opts->b * opts->n);
+    FILE* in = fopen(opts->input_file, "r");
+    if (!in) {
+        destroy_buffer(buff);
+        return ERROR;
+    }
+
+    // <stage 1> create sorted runs
+    int runs = create_sorted_runs(opts, in, buff);
     fclose(in);
+    if (runs < 0) {
+        destroy_buffer(buff);
+        return ERROR;
+    }
+
+    if (runs > 1) {
+        int result = merge_all_runs(opts, buff, runs);
+        destroy_buffer(buff);
+        return result;
+    }
     destroy_buffer(buff);
     return SUCCESS;
 }
