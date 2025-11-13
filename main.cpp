@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "reader.hpp"
 #include "record.hpp"
 #include <fstream>
 #include <iostream>

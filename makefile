@@ -1,4 +1,4 @@
-CFLAGS = -g -lc++
+CFLAGS = -g -lc++ -std=c++17
 
 build/main: main.cpp build
 	clang $(CFLAGS) main.cpp -o build/main
