@@ -20,6 +20,9 @@ size_t read_chunk(Reader& reader, SubBuffer& buff)
 
 void write_to_file(const std::string& filename, SubBuffer& buff, size_t n)
 {
+    std::filesystem::path dirPath = std::filesystem::path(filename).parent_path();
+    std::filesystem::create_directories(dirPath);
+
     std::ofstream out_stream(filename);
     Writer output_writer(out_stream);
     for (size_t j = 0; j < n; j++) {
@@ -46,6 +49,7 @@ void create_initial_runs(const std::string& input_filename, const std::string& d
 int sort_file(const Configuration& opts)
 {
     Buffer main_buffer(opts.n * opts.b);
+
     create_initial_runs(opts.input_file, opts.directory, main_buffer);
 
     return 0;

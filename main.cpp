@@ -9,6 +9,9 @@
 
 void generate_file(int N, const std::string& filename)
 {
+    std::filesystem::path dirPath = std::filesystem::path(filename).parent_path();
+    std::filesystem::create_directories(dirPath);
+
     std::ofstream out_stream(filename);
     Writer output(out_stream);
 
