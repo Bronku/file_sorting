@@ -45,8 +45,8 @@ public:
     bool write(const Record& record)
     {
         write_buffer[current_index] = record;
-        ++current_index;
-        ++total_writes_count;
+        current_index++;
+        total_writes_count++;
 
         if (current_index >= buffer_size) {
             return flush_buffer();
