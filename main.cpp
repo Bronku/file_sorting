@@ -1,25 +1,20 @@
 #include "config.hpp"
-#include "reader.hpp"
 #include "record.hpp"
+#include "writer.hpp"
 #include <fstream>
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
 
-int generate_file(int N, const std::string& filename)
+void generate_file(int N, const std::string& filename)
 {
-    std::ofstream out(filename);
-    if (!out) {
-        std::cerr << "Failed to open output file: " << filename << '\n';
-        return 1;
-    }
+    std::ofstream out_stream(filename);
+    Writer output(out_stream);
 
     for (int i = 0; i < N; i++) {
         Record rec = Record::random();
-        out << rec << '\n';
+        output.write(rec);
     }
-
-    return 0;
 }
 
 int sort_file(const Configuration& opts)
@@ -35,10 +30,11 @@ int main(int argc, char** argv)
         Configuration opts = Configuration::parse_args(argc, argv);
 
         if (opts.generate_data) {
-            return generate_file(opts.N, opts.output_file);
+            generate_file(opts.N, opts.output_file);
+            return 0;
         }
 
-        return sort_file(opts);
+        sort_file(opts);
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << '\n';

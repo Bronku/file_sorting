@@ -9,18 +9,20 @@ private:
     std::ostream& output_stream;
     size_t buffer_size;
     size_t total_writes_count;
-    size_t current_idx; // Current position in buffer
+    size_t current_index;
 
     // returns true on success
     // doesn't really flush for performace reasons
-    // could be changed to really flush to monitor the impac of amount of writes
+    // could be changed to really flush to monitor the impact of amount of writes
     bool flush_buffer()
     {
-        for (size_t i = 0; i < current_idx; ++i) {
+        for (size_t i = 0; i < current_index; ++i) {
             if (!(output_stream << write_buffer[i])) {
                 return false;
             }
         }
+
+        current_index = 0;
 
         return true;
     }
@@ -31,17 +33,22 @@ public:
         , output_stream(output_stream)
         , buffer_size(buffer_size)
         , total_writes_count(0)
-        , current_idx(0)
+        , current_index(0)
     {
+    }
+
+    ~Writer()
+    {
+        flush_buffer();
     }
 
     bool write(const Record& record)
     {
-        write_buffer[current_idx] = record;
-        current_idx++;
-        total_writes_count++;
+        write_buffer[current_index] = record;
+        ++current_index;
+        ++total_writes_count;
 
-        if (current_idx >= buffer_size) {
+        if (current_index >= buffer_size) {
             return flush_buffer();
         }
 
