@@ -4,7 +4,7 @@
 #include "reader.hpp"
 #include "writer.hpp"
 #include <fstream>
-//
+
 // returns amount of records read
 size_t read_chunk(Reader& reader, SubBuffer& buff)
 {
@@ -34,9 +34,7 @@ void create_initial_runs(const std::string& input_filename, const std::string& d
     std::ifstream in_stream(input_filename);
     Reader input_reader(in_stream);
     for (size_t run_index = 0;; run_index++) {
-        std::cout << "creating run " << run_index << '\n';
         size_t size = read_chunk(input_reader, buff);
-        std::cout << "read " << size << " records\n";
         if (size == 0) {
             break;
         }
@@ -49,7 +47,6 @@ int sort_file(const Configuration& opts)
 {
     Buffer main_buffer(opts.n * opts.b);
     create_initial_runs(opts.input_file, opts.directory, main_buffer);
-    // TODO: Implement sorting with new buffer classes
-    std::cout << "Sorting not yet implemented\n";
+
     return 0;
 }
