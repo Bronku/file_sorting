@@ -1,3 +1,4 @@
+// #todo maybe overload << operators insted of write()
 #pragma once
 #include "record.hpp"
 #include <ostream>
@@ -17,7 +18,7 @@ private:
     bool flush_buffer()
     {
         for (size_t i = 0; i < current_index; ++i) {
-            if (!(output_stream << write_buffer[i])) {
+            if (!(output_stream << write_buffer[i] << " ")) {
                 return false;
             }
         }

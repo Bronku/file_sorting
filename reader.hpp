@@ -1,3 +1,4 @@
+// #todo maybe overload >> operators insted of read()
 #pragma once
 #include "record.hpp"
 #include <istream>
@@ -16,16 +17,21 @@ private:
     // returns true if at least one record was returned
     bool refill_buffer()
     {
+        std::cout << "refilling buffer\n";
         last_element_idx = -1;
         current_idx = 0;
 
         for (size_t i = 0; i < buffer_size; i++) {
+            std::cout << "buffer refill: i: " << i << '\n';
             if (!(input_stream >> read_buffer[i])) {
+                std::cout << "input stream error\n";
+                std::cout << read_buffer[i] << '\n';
                 break;
             }
-            last_element_idx = static_cast<int>(i);
+            last_element_idx = i;
         }
 
+        std::cout << "buffer refill successfull\n";
         return last_element_idx >= 0;
     }
 

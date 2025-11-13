@@ -20,6 +20,10 @@ private:
     }
 
 public:
+    // so that i can create a  vecotr of set size, without the .reserve(), and other stuff
+    SubBuffer()
+    {
+    }
     // for std::sort support
     using iterator = Record*;
     iterator begin() { return data_; }

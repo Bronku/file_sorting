@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "record.hpp"
+#include "sort.cpp"
 #include "writer.hpp"
 #include <fstream>
 #include <iostream>
@@ -15,13 +16,6 @@ void generate_file(int N, const std::string& filename)
         Record rec = Record::random();
         output.write(rec);
     }
-}
-
-int sort_file(const Configuration& opts)
-{
-    // TODO: Implement sorting with new buffer classes
-    std::cout << "Sorting not yet implemented\n";
-    return 0;
 }
 
 int main(int argc, char** argv)

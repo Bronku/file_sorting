@@ -1,15 +1,15 @@
 CFLAGS = -g -lc++ -std=c++17
 
-build/main: main.cpp build
+build/main: main.cpp sort.cpp buffer.hpp reader.hpp writer.hpp build
 	clang $(CFLAGS) main.cpp -o build/main
 
 build:
 	mkdir -p build
 
-build/run: build
+build/run:
 	mkdir -p build/run
 
-build/run/tmp: build/run
+build/run/tmp:
 	mkdir -p build/run/tmp
 
 clean:
@@ -17,11 +17,12 @@ clean:
 
 generate: build/run/1.in
 
-build/run/1.in: build/run build/main
+# actually should depend on build/main and build/run, but that will trigger it every recompile, and i don't need that
+build/run/1.in: build/run/tmp
 	build/main -g -o build/run/1.in
 
 run: build/main build/run/1.in build/run/tmp
-	build/main -i build/run/1.in -d build/run/tmp | less
+	build/main -i build/run/1.in -d build/run/tmp
 
 debug: build/main tests/1.in
 	lldb -- build/main
