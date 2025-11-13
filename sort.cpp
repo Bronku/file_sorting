@@ -31,7 +31,7 @@ void create_initial_runs(const std::string& input_filename, const std::string& d
 {
     auto buff = main_buffer.divide(1)[0];
 
-    std::ifstream in_stream(input_filename, std::ios::binary);
+    std::ifstream in_stream(input_filename);
     Reader input_reader(in_stream);
     for (size_t run_index = 0;; run_index++) {
         std::cout << "creating run " << run_index << '\n';

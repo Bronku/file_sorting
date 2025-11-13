@@ -10,6 +10,7 @@ public:
     std::string output_file = "1.in";
     std::string directory = "tmp";
     bool generate_data = false;
+    bool evaluate_file = false;
     int N = 100000; // number of records in a file
     int n = 101; // number of buffers
     int b = 10; // blocking factor
@@ -18,14 +19,14 @@ public:
     {
         if (argc <= 1) {
             std::cerr << "Please specify input arguments\n";
-            std::cerr << "Usage: " << argv[0] << " [-g] [-N count] [-i input] [-o output] [-d directory] [-n buffers] [-b block_size]\n";
+            std::cerr << "Usage: " << argv[0] << " [-g] [-e] [-N count] [-i input] [-o output] [-d directory] [-n buffers] [-b block_size]\n";
             throw std::invalid_argument("No input arguments");
         }
         Configuration config;
         bool input_set = false;
         int opt;
 
-        while ((opt = getopt(argc, argv, "i:o:d:gN:n:b:")) != -1) {
+        while ((opt = getopt(argc, argv, "i:o:d:geN:n:b:")) != -1) {
             switch (opt) {
             case 'i':
                 config.input_file = optarg;
@@ -39,6 +40,9 @@ public:
                 break;
             case 'g':
                 config.generate_data = true;
+                break;
+            case 'e':
+                config.evaluate_file = true;
                 break;
             case 'N':
                 config.N = std::stoi(optarg);
@@ -56,6 +60,9 @@ public:
 
         if (config.generate_data && input_set) {
             throw std::invalid_argument("Cannot specify both -g and -i options");
+        }
+        if (config.generate_data && config.evaluate_file) {
+            throw std::invalid_argument("Cannot specify both -g and -e options");
         }
 
         return config;

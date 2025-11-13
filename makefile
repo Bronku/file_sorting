@@ -1,6 +1,6 @@
 CFLAGS = -g -lc++ -std=c++17
 
-build/main: main.cpp sort.cpp buffer.hpp reader.hpp writer.hpp build
+build/main: main.cpp sort.cpp config.hpp buffer.hpp reader.hpp writer.hpp build
 	clang $(CFLAGS) main.cpp -o build/main
 
 build:
