@@ -63,6 +63,14 @@ In stage 2 each buffer is populated by the HEAD of the coresponding file
   - [ ] push operation requires heapify function
 - [ ] buffer i/o operations
 
+# Quirks
+
+the reader, writer, buffer, etc is a mess, could be much simpler, clearer, more readable, and less error prone if not for the "reading in chunks of bytes"
+
+It creates a need for two separate buffers for reading, three if counting internal buffers of stream operations in c++. Unncessairly increases complexity, and so on.
+
+I'm not really sure if i'm even doing it correctly and as intended, cause it's so messy
+
 # Analysis
 
 #todo

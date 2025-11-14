@@ -18,7 +18,10 @@ build/run/1.in:
 run: build/main build/run/1.in
 	build/main -i build/run/1.in -d build/run/tmp
 
+run_alt: build/main build/run/1.in
+	build/main -i build/run/1.in -d build/run/tmp -n 11 -b 100
+
 debug: build/main tests/1.in
 	lldb -- build/main
 
-.PHONY: clean run debug test generate
+.PHONY: clean run debug test generate run_alt
