@@ -3,10 +3,8 @@
 #include "config.hpp"
 #include "reader.hpp"
 #include "writer.hpp"
-#include <exception>
 #include <fstream>
 #include <queue>
-#include <stdexcept>
 #include <string>
 
 // returns amount of records read
