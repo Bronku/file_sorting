@@ -1,11 +1,18 @@
 CXX = clang++
-CFLAGS = -g -lc++ -std=c++17
+CXXFLAGS = -g -std=c++20 -Iinclude -Wall -Wextra -Werror
+LDFLAGS =
 
 SRC := $(wildcard src/*.cpp)
+OBJ := $(SRC:src/%.cpp=build/%.o)
 TARGET = build/main
 
-$(TARGET): $(SRC) | build
-	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+build/%.o: src/%.cpp | build
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 build:
 	mkdir -p build build/run
@@ -25,4 +32,4 @@ run: $(TARGET) build/run/1.in
 run_alt: $(TARGET) build/run/1.in
 	$(TARGET) -i build/run/1.in -d build/run/tmp -n 11 -b 100
 
-.PHONY: clean run generate run_alt
+.PHONY: clean run generate run_alt all

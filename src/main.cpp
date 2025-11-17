@@ -1,19 +1,16 @@
-#include "config.hpp"
-#include "record.hpp"
-#include "sort.cpp"
-#include "writer.hpp"
-#include <fstream>
+#include "../include/config.hpp"
+#include "../include/file_reader.hpp"
+#include "../include/file_writer.hpp"
+#include "../include/merge_sorter.hpp"
+#include "../include/record.hpp"
 #include <iostream>
+#include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 void generate_file(int N, const std::string& filename)
 {
-    std::filesystem::path dirPath = std::filesystem::path(filename).parent_path();
-    std::filesystem::create_directories(dirPath);
-
-    std::ofstream out_stream(filename);
-    Writer output(out_stream);
+    FileWriter output(filename);
 
     for (int i = 0; i < N; i++) {
         Record rec = Record::random();
@@ -21,47 +18,33 @@ void generate_file(int N, const std::string& filename)
     }
 }
 
-void read_and_evaluate(std::string filename, int n)
+void read_and_evaluate(std::string filename)
 {
-    Buffer main_buffer(n);
-    auto buff = main_buffer.divide(1)[0];
-
-    std::ifstream in_stream(filename);
-    Reader input_reader(in_stream);
-
+    FileReader input(filename);
     while (true) {
-        size_t records_read = read_chunk(input_reader, buff);
-
-        if (records_read == 0) {
-            break;
+        auto rec = input.read();
+        if (!rec.has_value()) {
+            return;
         }
 
-        for (size_t i = 0; i < records_read; ++i) {
-            const Record& rec = buff[i];
-            std::cout << "[Evaluate i = " << i << ": " << rec.evaluate() << "] " << rec << "\n";
-        }
+        std::cout << "[Evaluate: " << rec.value().evaluate() << "] " << rec.value() << "\n";
     }
 }
 
 int main(int argc, char** argv)
 {
-    try {
-        Configuration opts = Configuration::parse_args(argc, argv);
+    Configuration opts(argc, argv);
 
-        if (opts.generate_data) {
-            generate_file(opts.N, opts.output_file);
-            return 0;
-        }
-
-        if (opts.evaluate_file) {
-            read_and_evaluate(opts.input_file, opts.N);
-            return 0;
-        }
-
-        sort_file(opts);
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << '\n';
-        return 1;
+    if (opts.generate_data) {
+        generate_file(opts.N, opts.output_file);
+        return 0;
     }
+
+    if (opts.evaluate_file) {
+        read_and_evaluate(opts.input_file);
+        return 0;
+    }
+
+    MergeSorter sorter(opts.b, opts.n, opts.tmp_dir);
+    sorter.sort_file(opts.input_file, opts.output_file);
 }
