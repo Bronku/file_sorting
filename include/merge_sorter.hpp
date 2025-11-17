@@ -21,9 +21,9 @@ private:
 
 public:
     MergeSorter(size_t buffer_rows, size_t buffer_cols, const std::string& tmp_dir);
-    bool sort_file(const std::string& input_file, const std::string& output_file);
+    void sort_file(const std::string& input_file, const std::string& output_file);
 
-    size_t disk_reads() const;
-    size_t disk_writes() const;
-    size_t phases() const;
+    size_t disk_reads();
+    size_t disk_writes();
+    size_t phases();
 };

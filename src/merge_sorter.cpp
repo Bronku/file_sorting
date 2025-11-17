@@ -138,7 +138,7 @@ MergeSorter::MergeSorter(size_t buffer_rows, size_t buffer_cols, const std::stri
     }
 }
 
-bool MergeSorter::sort_file(const std::string& input_file, const std::string& output_file)
+void MergeSorter::sort_file(const std::string& input_file, const std::string& output_file)
 {
     std::string current_dir = tmp_dir_ + "/pass0/run_";
     std::string next_dir = tmp_dir_ + "/pass1/run_";
@@ -146,16 +146,29 @@ bool MergeSorter::sort_file(const std::string& input_file, const std::string& ou
 
     run_count = create_initial_runs(input_file, current_dir);
     phases_++;
-    std::cout << "created inital runs, disk reads: " << disk_reads_ << ", disk writes: " << disk_writes_ << '\n';
 
     while (run_count > 1) {
         run_count = merge_pass(current_dir, next_dir, run_count);
-        std::cout << "completed merge pass " << phases_ << ", disk reads: " << disk_reads_ << ", disk writes: " << disk_writes_ << '\n';
         phases_++;
         current_dir = next_dir;
         next_dir = tmp_dir_ + "/pass" + std::to_string(phases_) + "/run_";
     }
 
-    std::cout << output_file << '\n';
-    return true;
+    std::string final_run = current_dir + "0.dat";
+    std::filesystem::rename(final_run, output_file);
+}
+
+size_t MergeSorter::disk_reads()
+{
+    return disk_reads_;
+}
+
+size_t MergeSorter::disk_writes()
+{
+    return disk_writes_;
+}
+
+size_t MergeSorter::phases()
+{
+    return phases_;
 }

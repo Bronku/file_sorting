@@ -21,13 +21,13 @@ void generate_file(int N, const std::string& filename)
 void read_and_evaluate(std::string filename)
 {
     FileReader input(filename);
-    while (true) {
+    for (size_t i = 0;; i++) {
         auto rec = input.read();
         if (!rec.has_value()) {
             return;
         }
 
-        std::cout << "[Evaluate: " << rec.value().evaluate() << "] " << rec.value() << "\n";
+        std::cout << "record " << i << " [value: " << rec.value().evaluate() << "] " << rec.value() << "\n";
     }
 }
 
@@ -36,15 +36,18 @@ int main(int argc, char** argv)
     Configuration opts(argc, argv);
 
     if (opts.generate_data) {
-        generate_file(opts.N, opts.output_file);
+        generate_file(opts.generate_data, opts.output_file);
         return 0;
     }
 
-    if (opts.evaluate_file) {
+    if (opts.read_file) {
         read_and_evaluate(opts.input_file);
         return 0;
     }
 
-    MergeSorter sorter(opts.b, opts.n, opts.tmp_dir);
+    MergeSorter sorter(opts.buffer_cols, opts.buffer_rows, opts.tmp_directory);
     sorter.sort_file(opts.input_file, opts.output_file);
+    std::cout << "total reads: " << sorter.disk_reads() << '\n'
+              << "total writes: " << sorter.disk_writes() << '\n'
+              << "phases: " << sorter.phases() << "\n";
 }

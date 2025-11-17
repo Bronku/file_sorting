@@ -4,14 +4,18 @@
 
 class Configuration {
 public:
+    // I/O settings
     std::string input_file = "1.in";
     std::string output_file = "1.out";
-    std::string tmp_dir = "build/run";
-    bool generate_data = false;
-    bool evaluate_file = false;
-    int N = 100000; // number of records in a file
-    int n = 101; // number of buffers
-    int b = 10; // blocking factor
+    std::string tmp_directory = "run";
+
+    // Algorithm settings
+    size_t buffer_rows = 101;
+    size_t buffer_cols = 10;
+
+    // Additional modes
+    size_t generate_data = 0;
+    bool read_file = false;
 
     Configuration(int argc, char** argv);
 };
