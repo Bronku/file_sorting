@@ -8,14 +8,14 @@ class MergeSorter {
 private:
     std::vector<Record> buffer_;
     const std::string& tmp_dir_;
-    size_t buffer_rows = 0;
+    size_t buffer_rows_ = 0;
     size_t disk_reads_ = 0;
     size_t disk_writes_ = 0;
     size_t phases_ = 0;
 
-    size_t create_initial_runs(const std::string& input_file);
-    void merge_runs(const std::vector<std::string>& input_files,
-        const std::string& output_file);
+    std::span<Record> get_chunk_span(size_t chunk_index);
+    size_t create_initial_runs(const std::string& input_file, const std::string& next_dir);
+    size_t merge_pass(const std::string& current_dir, const std::string& next_dir, size_t run_count);
     void perform_k_way_merge(std::vector<std::unique_ptr<FileReader>>& readers,
         FileWriter& writer);
 

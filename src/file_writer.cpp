@@ -24,7 +24,7 @@ FileWriter::~FileWriter()
     write_buffer();
 }
 
-void FileWriter::write(const Record& record)
+void FileWriter::write(Record record)
 {
     if (current_pos_ >= buffer_.size()) {
         write_buffer();
@@ -34,7 +34,7 @@ void FileWriter::write(const Record& record)
     total_writes_++;
 }
 
-void FileWriter::write_chunk(std::span<const Record>& chunk)
+void FileWriter::write_chunk(std::span<Record> chunk)
 {
     for (const auto& record : chunk) {
         write(record);

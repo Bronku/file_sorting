@@ -16,8 +16,8 @@ public:
     FileWriter(const std::string& filename, size_t buffer_size = 8);
     ~FileWriter();
 
-    void write(const Record& record);
-    void write_chunk(std::span<const Record>& chunk);
+    void write(Record record);
+    void write_chunk(std::span<Record> chunk);
 
     size_t total_writes() const;
 };
