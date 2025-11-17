@@ -19,9 +19,9 @@ size_t MergeSorter::create_initial_runs(const std::string& input_file)
         auto output = std::span<const Record>(chunk.data(), records_read);
         writer.write_chunk(output);
 
-        disk_reads_ += reader.total_reads() - disk_reads_;
-        disk_writes_ += writer.total_writes() - disk_writes_;
+        disk_writes_ += writer.total_writes();
     }
+    disk_reads_ += reader.total_reads();
 
     return run_count;
 }
@@ -41,6 +41,7 @@ MergeSorter::MergeSorter(size_t buffer_rows, size_t buffer_cols, const std::stri
 bool MergeSorter::sort_file(const std::string& input_file, const std::string& output_file)
 {
     create_initial_runs(input_file);
+    std::cout << "created inital runs, disk reads: " << disk_reads_ << ", disk writes: " << disk_writes_ << '\n';
     std::cout << output_file << '\n';
     return true;
 }
