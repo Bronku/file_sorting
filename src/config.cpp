@@ -6,7 +6,7 @@ Configuration::Configuration(int argc, char** argv)
 {
     if (argc <= 1) {
         std::cerr << "Please specify input arguments\n";
-        std::cerr << "Usage: " << argv[0] << " [-g count] [-e]  [-i input] [-o output] [-d dir] [-n buffers] [-b block_size]\n";
+        std::cerr << "Usage: " << argv[0] << " [-g count] [-e] [-i input] [-o output] [-d dir] [-n buffers] [-b block_size]\n";
         throw std::invalid_argument("No input arguments");
     }
     bool input_set = false;
