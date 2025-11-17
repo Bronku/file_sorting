@@ -150,6 +150,7 @@ bool MergeSorter::sort_file(const std::string& input_file, const std::string& ou
 
     while (run_count > 1) {
         run_count = merge_pass(current_dir, next_dir, run_count);
+        std::cout << "completed merge pass " << phases_ << ", disk reads: " << disk_reads_ << ", disk writes: " << disk_writes_ << '\n';
         phases_++;
         current_dir = next_dir;
         next_dir = tmp_dir_ + "/pass" + std::to_string(phases_) + "/run_";
