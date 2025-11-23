@@ -15,7 +15,9 @@ FileWriter::FileWriter(const std::string& filename, size_t buffer_size)
 {
     std::filesystem::path file_path(filename);
     std::filesystem::path dir_path = file_path.parent_path();
-    std::filesystem::create_directories(dir_path);
+    if (dir_path != "") {
+        std::filesystem::create_directories(dir_path);
+    }
     stream_.open(filename);
 }
 
