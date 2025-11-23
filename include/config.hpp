@@ -10,7 +10,7 @@ public:
     std::string tmp_directory = "run";
 
     // Algorithm settings
-    size_t buffer_rows = 101;
+    size_t buffer_rows = 11;
     size_t buffer_cols = 10;
 
     // Additional modes

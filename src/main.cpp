@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    MergeSorter sorter(opts.buffer_cols, opts.buffer_rows, opts.tmp_directory);
+    MergeSorter sorter(opts.buffer_rows, opts.buffer_cols, opts.tmp_directory);
     sorter.sort_file(opts.input_file, opts.output_file);
     std::cout << "total reads: " << sorter.disk_reads() << '\n'
               << "total writes: " << sorter.disk_writes() << '\n'
